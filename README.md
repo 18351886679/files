@@ -1,2 +1,1 @@
-# files
-knowledge
+You need to know nothing.
