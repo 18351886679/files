@@ -1,0 +1,10 @@
+{
+  "server":"192.210.216.61",
+  "server_port":8088,
+  "local_address":"127.0.0.1",
+  "local_port":8089,
+  "password":"zcx123456",
+  "timeout":300,
+  "method":"aes-256-cfb",
+  "fast_open": false
+}

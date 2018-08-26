@@ -1,0 +1,297 @@
+# SOCKS5 协议解析
+## 意图
+SOCKS5 是一个代理协议，旨在为位于 Intranet 防火墙后的用户提供访问 Internet 的代理服务（Intranet，你没听错，这是个有一定年头的协议，其 RFC 提案的时间比 HTTP 1.0 还要早两个月）。
+
+根据 HTTP 1.1 的定义，proxy 是：
+
+An intermediary program which acts as both a server and a client for the purpose of making requests on behalf of other clients. Requests are serviced internally or by passing them on, with possible translation, to other servers.
+
+代理就是中间人，一人分饰两角：客户端眼中的目标服务器，目标服务器眼中的客户端——这意味着他必须同时满足C/S 双方的规范。再细分，如果只是简单的 pipe C/S 两端数据，那他就是个“透明代理”；一旦他对请求或响应进行了修改，那就是“非透明代理”。
+
+但其实，SOCKS5 协议并不负责代理服务器的数据传输环节，此协议只是在C/S两端真实交互之间，建立起一条从客户端到代理服务器的授信连接。来看看细节：
+
+## 协议流程
+从流程上来说，SOCKS5  是一个C/S 交互的协议，交互大概分为这么几步：
+
+1. 客户端发送认证协商
+2. 代理服务器就认证协商进行回复（如拒绝则本次会话结束）
+3. 如需GSSAPI或用户名/密码认证，客户端发送认证信息
+4. 代理服务器就对应项进行鉴权，并进行回复或拒绝
+5. 客户端发送希望连接的目标信息
+6. 代理服务器就连接信息进行确认或拒绝
+7. [非协议内容]：代理服务器连接目标并 pipe 到客户端
+
+## 协议细节
+### 1.认证
+认证方法：
+0x00: NO AUTHENTICATION REQUIRED
+0x01: GSSAPI
+0x02: USERNAME/PASSWORD
+0x03: to X’7F’ IANA ASSIGNED
+0x80: to X’FE’ RESERVED FOR PRIVATE METHODS
+0xFF: NO ACCEPTABLE METHODS
+#### 1.1 客户端 -> 代理服务器，请求认证：
+
+|版本号(1字节)	|可供选认证方法(1字节)	|选择的方法(1~255字节)|
+|:------------|:--------------------|:------------------|
+|固定为5	      |选了多少种	         |都有上表中哪些方法    |
+
+#### 1.2 代理服务器  -> 客户端，响应认证：
+
+|版本号(1字节)	|确认认证的方法|
+|:------------|:------------|
+| 固定为5      |	认证方法列表的某项：<br/>0x00，则无需客户端发送进一步认证的信息<br/>0x01，则需要客户端进行进一步认证，细节见 RFC1929<br/>0x01，则需要客户端进行进一步认证，细节见RFC2743<br/>0xFF，则相当于拒绝请求，客户端只能关闭连接 |
+
+
+### 2. 请求信息
+#### 2.1 客户端 -> 代理服务器，发送目标信息：
+|版本号(1字节)|命令(1字节)	|保留(1字节)	|请求类型(1字节)	|地址(不定长)	|端口(2字节)|
+|:-|:-|:-|:-|:-|:-|
+|固定为5| 0x01: CONNECT<br/>0x02: BIND<br/>0x03: UDP ASSOCIATE|固定为 0x00|0x01: IP V4 地址<br/>0x03: 域名<br/>0x04: IP V6 地址|如果请求类型是域名，第个1字节为域名的长度	|
+
+命令字段说明：
+
+* CONNECT:  用于客户端请求服务器进行代理
+* BIND:  用于客户端向服务器上报自己的反向连接监听地址（应用场景如 FTP 下载，客户端需要接受来自服务器的连接
+* UDP ASSOCIATE：用于请求建立到 UDP 数据报中继的连接
+
+#### 2.2 代理服务器 -> 客户端，确认连接：
+|版本号(1字节)	|确认回应(1字节)|	保留(1字节)	|响应类型(1字节)|	地址(不定长)	|端口(2字节)|
+|:-|:-|:-|:-|:-|:-|
+|固定为5	|0x00: succeeded<br/>0x01: general SOCKS server failure<br/>0x02: connection not allowed by ruleset<br/>0x03: Network unreachable<br/>0x04: Host unreachable<br/>0x05: Connection refused<br/>0x06: TTL expired<br/>0x07: Command not supported<br/>0x08: Address type not supported<br/>0x09: to X’FF’ unassigned|固定为 0x00|仅用于响应客户端BIND命令：<br/>0x01: IP V4 地址<br/>0x03: 域名<br/>0x04: IP V6 地址|仅用于响应客户端BIND命令：如果请求类型是域名，第个1字节为域名的长度|	仅用于响应客户端BIND命令|
+可以看出，在代理服务器确认回应为 0x00 时，此次 SOCKS5 协议协商部分顺利完成，宣告进入到数据传输阶段（也可以说，这之后发生的事已经与SOCKS5协议无关）。
+
+## 代码示例
+协议就是这样严谨，还是代码比较轻松，解释也更为直观：
+```
+import (
+	"encoding/binary"
+	"errors"
+	"flag"
+	"fmt"
+	"io"
+	"log"
+	"math/rand"
+	"net"
+	"os"
+	"strconv"
+	"time"
+)
+
+const (
+	socksVersion     = 5
+	layoutVer        = 0
+	layoutNofMethods = 1
+	layoutMethods    = 2
+	layoutCommand    = 1
+	layoutRSV        = 2
+	layoutATYP       = 3
+	layoutAddr       = 4
+	typeConnect      = 1
+
+	typeIPv4   = uint8(1)
+	typeDomain = uint8(3)
+	typeIPv6   = uint8(4)
+	lenIPv4    = 3 + 1 + net.IPv4len + 2
+	lenIPv6    = 3 + 1 + net.IPv6len + 2
+	lenDmBase  = 3 + 1 + 1 + 2
+)
+
+type (
+	Socks5Negotiation struct {
+		Version      uint8
+		NumOfMethods uint8
+		Methods      []uint8
+	}
+
+	Socks5Request struct {
+		Version         uint8
+		Command         uint8
+		RSV             uint8
+		AddressType     uint8
+		Address         string
+		Port            uint16
+		AddressWithPort string
+		RawAddr         []byte
+	}
+)
+
+func reply(conn net.Conn, bytes []byte) (err error) {
+	if _, err := conn.Write(bytes); err != nil {
+		log.Println("[RESP Error]", err)
+	}
+	return
+}
+
+// extract method negotiation header
+// |VER | NMETHODS | METHODS  |
+// +----+----------+----------+
+// | 1  |    1     | 1 to 255 |
+func extractNegotiation(conn net.Conn) (socks *Socks5Negotiation, err error) {
+	buf := make([]byte, requestBuf)
+
+	if _, err = io.ReadFull(conn, buf[:layoutNofMethods+1]); err != nil {
+		return
+	}
+
+	version := uint8(buf[layoutVer])
+	if version != 5 {
+		err = errors.New("NOT a Socks5 request")
+		return
+	}
+	nOfMethods := uint8(buf[layoutNofMethods])
+	if nOfMethods == 0 {
+		// do nothing
+	} else if _, err = io.ReadFull(conn,
+    buf[layoutMethods:layoutMethods+nOfMethods]); err != nil {
+		return
+	}
+
+	socks = new(tnt.Socks5Negotiation)
+	socks.Version = version
+	socks.NumOfMethods = nOfMethods
+
+	for i := uint8(0); i < nOfMethods; i++ {
+		method := uint8(buf[layoutMethods+i])
+		socks.Methods = append(socks.Methods, method)
+	}
+
+	return
+}
+
+// extract socks5 request
+// +----+-----+-------+------+----------+----------+
+// |VER | CMD |  RSV  | ATYP | DST.ADDR | DST.PORT |
+// +----+-----+-------+------+----------+----------+
+// | 1  |  1  | X'00' |  1   | Variable |    2     |
+// +----+-----+-------+------+----------+----------+
+func extractRequest(conn net.Conn) (socksReq *Socks5Request, err error) {
+	buf := make([]byte, requestBuf)
+
+	if _, err = io.ReadFull(conn, buf[:layoutATYP+1]); err != nil {
+		return
+	}
+
+	version := uint8(buf[layoutVer])
+	if version != 5 {
+		err = errors.New("NOT a socks5 request")
+		return
+	}
+	command := uint8(buf[layoutCommand])
+	if command != typeConnect {
+		err = errors.New("only CONNECT be able to accept")
+		return
+	}
+	RSV := uint8(buf[layoutRSV])
+	ATYP := uint8(buf[layoutATYP])
+	var address string
+	var addrEnd int
+	var reqLen int
+
+	switch ATYP {
+	case typeIPv4:
+		if _, err = io.ReadFull(conn,
+      buf[layoutAddr:layoutAddr+lenIPv4]); err != nil {
+			return
+		}
+		addrEnd = layoutAddr + lenIPv4
+		address = net.IP(buf[layoutAddr:addrEnd]).String()
+		reqLen = lenIPv4
+	case typeIPv6:
+		if _, err = io.ReadFull(conn,
+      buf[layoutAddr:layoutAddr+lenIPv6]); err != nil {
+			return
+		}
+		addrEnd = layoutAddr + lenIPv6
+		address = net.IP(buf[layoutAddr:addrEnd]).String()
+		reqLen = lenIPv6
+	case typeDomain:
+		if _, err = io.ReadFull(conn,
+      buf[layoutAddr:layoutAddr+1]); err != nil {
+			return
+		}
+		addrLen := int(buf[layoutAddr])
+		addrEnd = layoutAddr + 1 + addrLen
+		reqLen = addrLen + lenDmBase
+		if _, err = io.ReadFull(conn,
+      buf[layoutAddr+1:addrEnd]); err != nil {
+			return
+		}
+		address = string(buf[layoutAddr+1 : addrEnd])
+	default:
+		err = fmt.Errorf("address type is Unknown: %d", ATYP)
+		return
+	}
+
+	if _, err = io.ReadFull(conn, buf[addrEnd:addrEnd+2]); err != nil {
+		return
+	}
+
+	socksReq = new(tnt.Socks5Request)
+	socksReq.Version = version
+	socksReq.Command = command
+	socksReq.RSV = RSV
+	socksReq.AddressType = ATYP
+	socksReq.Address = address
+	socksReq.Port = binary.BigEndian.Uint16(buf[addrEnd : addrEnd+2])
+	socksReq.AddressWithPort = net.JoinHostPort(address,
+    strconv.Itoa(int(socksReq.Port)))
+	socksReq.RawAddr = buf[layoutATYP:reqLen]
+	return
+}
+
+// reply the method selection
+// |VER | METHOD |
+// +----+--------+
+// | 1  |   1    |
+func replyNegotiation(conn net.Conn, socks *tnt.Socks5Negotiation) {
+	// no authentication required
+	reply(conn, []byte{socksVersion, 0x00})
+}
+
+// reply the request
+// |VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |
+// +----+-----+-------+------+----------+----------+
+// | 1  |  1  | X'00' |  1   | Variable |    2     |
+func replyRequest(conn net.Conn, socksRequest *tnt.Socks5Request) {
+	reply(conn, []byte{0x05, 0x00, 0x00, 0x01,
+    0x00, 0x00, 0x00, 0x00, 0x80, 0x88})
+}
+
+// rountine of per connection
+// https://www.ietf.org/rfc/rfc1928.txt
+func handleConn(conn net.Conn) {
+	defer conn.Close()
+
+	// 1. extract info about negotiation
+	socks, err := extractNegotiation(conn)
+	if err != nil {
+		log.Println("[Negotiate Request Error]", err)
+		return
+	}
+	log.Println(socks)
+
+	// 2. confirm negotiation
+	replyNegotiation(conn, socks)
+
+	// 3. extract info about request
+	socksRequest, err := extractRequest(conn)
+	if err != nil {
+		log.Println("[Extract Request Error]", err)
+		return
+	}
+	log.Println(socksRequest)
+
+	// 4. confirm the connection was established
+	replyRequest(conn, socksRequest)
+
+	// 5. pipe data ...
+)
+ ```
+
+## 引用
+SOCKS 5: https://www.ietf.org/rfc/rfc1928.txt
+SOCKS 5 Username/Password AUTH: https://www.ietf.org/rfc/rfc1929.txt
+HTTP 1.0: https://tools.ietf.org/rfc/rfc1945.txt
+HTTP 1.1: https://www.ietf.org/rfc/rfc2616.txt
+GSSAPI: https://tools.ietf.org/rfc/rfc2743.txt

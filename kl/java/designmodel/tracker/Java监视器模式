@@ -1,0 +1,80 @@
+# Java监视器模式
+类似装饰器模式，区别是不会对方法做出拓展，而是将每个方法加上监视器容器锁。
+## 示例
+```
+@ThreadSafe
+public class MonitorVehicleTracker {
+    @GuardedBy("this")
+    private final Map<String, MutablePoint> locations;
+
+    public MonitorVehicleTracker(Map<String, MutablePoint> points) {
+        locations = deepCopy(points);
+    }
+
+    public synchronized Map<String, MutablePoint> getLocations() {
+        return deepCopy(locations);
+    }
+
+    public synchronized MutablePoint getLocation(String key) {
+        MutablePoint point = locations.get(key);
+        return point == null ? null : new MutablePoint(point);
+    }
+
+    public synchronized void setLocation(String id, int x, int y) {
+        if (id == null) {
+            return;
+        }
+        MutablePoint point = locations.get(id);
+        if (point == null) {
+            throw new IllegalArgumentException("No such ID: " + id);
+        }
+        point.setPoint(x, y);
+
+    }
+
+    private Map<String, MutablePoint> deepCopy(Map<String, MutablePoint> points) {
+        if (points == null) {
+            return Maps.newHashMap();
+        }
+        Map<String, MutablePoint> result = Maps.newHashMapWithExpectedSize(points.size());
+        for (String key : points.keySet()) {
+            result.put(key, new MutablePoint(points.get(key)));
+        }
+        return Collections.unmodifiableMap(result);
+    }
+}
+
+@NotThreadSafe
+public class MutablePoint {
+    private int x, y;
+
+    public MutablePoint(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public MutablePoint() {
+    }
+
+    public MutablePoint(MutablePoint point) {
+        if (point == null) {
+            throw new IllegalArgumentException("param is null");
+        }
+        int[] pointArray = point.getPointArray();
+        x = pointArray[0];
+        y = pointArray[1];
+    }
+
+    public int[] getPointArray() {
+        int[] ret = new int[2];
+        ret[0] = x;
+        ret[1] = y;
+        return ret;
+    }
+
+    public void setPoint(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+```

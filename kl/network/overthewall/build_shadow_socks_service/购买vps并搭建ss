@@ -1,0 +1,77 @@
+# 购买VPS并搭建SS
+## 推荐VPS网站
+搬瓦工-https://bwh1.net/ 账号-词校
+VIRMACH-https://billing.virmach.com/ 账号-Cixiao
+其中virmach机器的ssh协议使用6000端口。
+
+
+## 登录工具
+网站自带的VNC登录工具
+putty
+
+## 安装shadowsocks
+ubuntu14需要先安装pip：
+```
+wget https://bootstrap.pypa.io/get-pip.py  --no-check-certificate
+sudo python get-pip.py
+sudo pip install shadowsocks
+```
+
+## 配置shadowsocks服务器
+### 命令直接启动
+```
+sudo ssserver -p 8388 -k password -m rc4-md5 -d start
+```
+### 配置文件
+```
+# /etc/shadowsocks.json
+{
+  "server":"192.210.216.61",
+  "server_port":8088,
+  "local_address":"127.0.0.1",
+  "local_port":8089,
+  "password":"zcx123456",
+  "timeout":300,
+  "method":"aes-256-cfb",
+  "fast_open": false
+}
+```
+#### 各字段的含义
+server 服务器 IP (IPv4/IPv6)
+server_port 服务器端口号
+local_port 本地端端口号
+password 用来加密的密码
+timeout 超时时间（秒）
+method 加密方法
+
+#### 创建完毕后，赋予文件权限
+```
+sudo chmod 755 /etc/shadowsocks.json
+```
+#### 安装需要的库
+```
+sudo apt–get install python–m2crypto
+```
+#### 运行/停止服务器
+```
+sudo ssserver -c /etc/shadowsocks.json -d start
+sudo ssserver -c /etc/shadowsocks.json -d stop
+```
+#### 设置开机启动
+```
+sudo vi /etc/rc.local
+```
+在exit 0上放加入代码
+```
+/usr/local/bin/ssserver –c /etc/ss_conf.json
+```
+
+## 安装客户端
+### 下载地址
+https://github.com/shadowsocks
+下图为windows客户端配置，按照服务端的配置填入即可
+![](../../../img/shadowsocks-win.PNG)
+
+
+## 使用pac分流请求
+shadowsocks自带的pac，通过配置pac配置文件，来决定哪些请求要通过代理访问，默认的pac配置文件中就包含了大量常见的国外域名，有特殊需要时再手动添加。
