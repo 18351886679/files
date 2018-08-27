@@ -1,0 +1,24 @@
+# ConcurrentHashMap
+## 分段锁 Lock Striping
+
+Hashtable和synchronizedMap使用的则是独占锁。
+
+## 迭代器弱一致性 Weakly Consistent
+&emsp;&emsp;可以忍受迭代时对容器进行修改，并可以（但是不保证）在迭代器被构造后将修改操作反映给容器。其结果是某些方法如size，isEmpty得到的不是准确值，其语义被减弱了，相反，get，put，containsKey，remove等操作的性能被优化了。
+
+
+# CopyOnWriteArrayList
+## 复制代替修改
+&emsp;&emsp;底层容器是个不可变的对象，也就是每次修改元素，都要创建并重新发布一个新的容器副本。显然它是线程安全，每次修改都复制底层数组听起来需要一定的开销，仅当迭代操作远多于修改操作时，才应该使用。监听器列表就是一个很好的示例。
+
+
+
+# LinkedBlockQueue
+
+# ArrayBlockingQueue
+
+# PriorityBlokingQueue
+
+# SynchronousQeueu
+
+# BlockingDeque

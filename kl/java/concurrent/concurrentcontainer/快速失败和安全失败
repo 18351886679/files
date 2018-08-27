@@ -1,0 +1,7 @@
+# 快速失败和安全失败
+## 快速失败 fail-fast
+&emsp;&emsp;同步容器类的迭代器在进行迭代时，如果发现容器被修改，就会抛出一个ConcurrentModifictionException。通过加锁可以避免这一点，但是迭代执行的时间可能很长。
+&emsp;&emsp;要注意隐藏的迭代器，比如容器的toString方法，就会通过迭代器调用每个对象的toString方法；同样，容器的equals和hashcode方法也会执行迭代操作。
+
+## 安全失败 fail-safe
+&emsp;&emsp;java.util.concurrent包下的容器类都是安全失败的，其方法是“克隆”容器，并在副本上进行迭代，但是在克隆容器时存在显著的性能开销。并且迭代时使用的是克隆发生时刻的容器状态。
