@@ -14,11 +14,16 @@ Hashtable和synchronizedMap使用的则是独占锁。
 
 
 # LinkedBlockQueue
+&emsp;&emsp;使用LinkedList实现的FIFO队列。
 
 # ArrayBlockingQueue
+&emsp;&emsp;使用ArrayList实现的FIFO队列。
 
 # PriorityBlokingQueue
+&emsp;&emsp;优先级最高的元素先出队。
 
 # SynchronousQeueu
+&emsp;&emsp;维护一组线程，这些线程直接将入队的元素交给在等待的线程，降低了将数据从生产者移动到消费者的延迟。
 
 # BlockingDeque
+&emsp;&emsp;双端BlockingQueue，当一个线程获取的一个双端队列为空时，它会从另一个双端队列的尾部获取元素。
