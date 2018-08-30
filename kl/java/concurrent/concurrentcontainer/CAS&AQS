@@ -1,0 +1,117 @@
+# CAS&AQS
+## 什么是CAS
+
+
+<blockquote style="line-height:27.2px;color:rgb(63,63,63);font-family:'microsoft yahei';font-size:16px;">
+<p style="font-size:1em;line-height:1.5;color:rgb(111,111,111);">
+CAS(Compare And Swap)，即比较并交换。是解决多线程并行情况下使用锁造成性能损耗的一种机制，CAS操作包含三个操作数——内存位置（V）、预期原值（A）和新值(B)。如果内存位置的值与预期原值相匹配，那么处理器会自动将该位置值更新为新值。否则，处理器不做任何操作。无论哪种情况，它都会在CAS指令之前返回该位置的值。CAS有效地说明了“我认为位置V应该包含值A；如果包含该值，则将B放到这个位置；否则，不要更改该位置，只告诉我这个位置现在的值即可。</p>
+</blockquote>
+在JAVA中，sun.misc.Unsafe 类提供了硬件级别的原子操作来实现这个CAS。 java.util.concurrent 包下的大量类都使用了这个 Unsafe.java 类的CAS操作。至于 Unsafe.java 的具体实现这里就不讨论了。
+
+## CAS典型应用
+java.util.concurrent.atomic 包下的类大多是使用CAS操作来实现的(eg. AtomicInteger.java,AtomicBoolean,AtomicLong)。下面以 AtomicInteger.java 的部分实现来大致讲解下这些原子类的实现。
+```
+public class AtomicInteger extends Number implements java.io.Serializable {
+    private static final long serialVersionUID = 6214790243416807050L;
+
+    // setup to use Unsafe.compareAndSwapInt for updates
+    private static final Unsafe unsafe = Unsafe.getUnsafe();
+
+    private volatile int value;// 初始int大小
+    // 省略了部分代码...
+
+    // 带参数构造函数，可设置初始int大小
+    public AtomicInteger(int initialValue) {
+        value = initialValue;
+    }
+    // 不带参数构造函数,初始int大小为0
+    public AtomicInteger() {
+    }
+
+    // 获取当前值
+    public final int get() {
+        return value;
+    }
+
+    // 设置值为 newValue
+    public final void set(int newValue) {
+        value = newValue;
+    }
+
+    //返回旧值，并设置新值为　newValue
+    public final int getAndSet(int newValue) {
+        /**
+        * 这里使用for循环不断通过CAS操作来设置新值
+        * CAS实现和加锁实现的关系有点类似乐观锁和悲观锁的关系
+        * */
+        for (;;) {
+            int current = get();
+            if (compareAndSet(current, newValue))
+                return current;
+        }
+    }
+
+    // 原子的设置新值为update, expect为期望的当前的值
+    public final boolean compareAndSet(int expect, int update) {
+        return unsafe.compareAndSwapInt(this, valueOffset, expect, update);
+    }
+
+    // 获取当前值current，并设置新值为current+1
+    public final int getAndIncrement() {
+        for (;;) {
+            int current = get();
+            int next = current + 1;
+            if (compareAndSet(current, next))
+                return current;
+        }
+    }
+
+    // 此处省略部分代码，余下的代码大致实现原理都是类似的
+}
+```
+
+一般来说在竞争不是特别激烈的时候，使用该包下的原子操作性能比使用 synchronized 关键字的方式高效的多(查看getAndSet()，可知如果资源竞争十分激烈的话，这个for循环可能换持续很久都不能成功跳出。不过这种情况可能需要考虑降低资源竞争才是)。
+在较多的场景我们都可能会使用到这些原子类操作。一个典型应用就是计数了，在多线程的情况下需要考虑线程安全问题。通常第一映像可能就是:
+
+```
+public class Counter {
+    private int count;
+    public Counter(){}
+    public int getCount(){
+        return count;
+    }
+    public void increase(){
+        count++;
+    }
+}
+```
+上面这个类在多线程环境下会有线程安全问题，要解决这个问题最简单的方式可能就是通过加锁的方式,调整如下:
+
+```
+public class Counter {
+    private int count;
+    public Counter(){}
+    public synchronized int getCount(){
+        return count;
+    }
+    public synchronized void increase(){
+        count++;
+    }
+}
+```
+
+这类似于悲观锁的实现，我需要获取这个资源，那么我就给他加锁，别的线程都无法访问该资源，直到我操作完后释放对该资源的锁。我们知道，悲观锁的效率是不如乐观锁的，上面说了Atomic下的原子类的实现是类似乐观锁的，效率会比使用 synchronized 关系字高，推荐使用这种方式，实现如下:
+```
+public class Counter {
+    private AtomicInteger count = new AtomicInteger();
+    public Counter(){}
+    public int getCount(){
+        return count.get();
+    }
+    public void increase(){
+        count.getAndIncrement();
+    }
+}
+```
+# AQS
+## 什么是AQS
