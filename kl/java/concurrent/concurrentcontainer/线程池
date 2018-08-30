@@ -1,0 +1,95 @@
+# Exector
+1. 通过重用现有的线程而不是创建新线程，可以减少创建和销毁线程的开销
+2. 当请求到来时，由于线程已经存在，可以减少等待时间，从而提高了响应性
+
+## 方法说明
+创建线程池的工具类为Executors
+#### newFixedThreadPool
+newFixedThreadPool创建一个定长的线程池, 每当提交一个任务就创建一个线程, 直到达到池的最大长度, 这时线程池会保持长度不再变化。（如果某个线程由于发生了未预期的Exception而结束了那么线程池会补充一个新的线程）
+```
+public static ExecutorService newFixedThreadPool(int nThreads) {
+    return new ThreadPoolExecutor(nThreads, nThreads,
+                                  0L, TimeUnit.MILLISECONDS,
+                                  new LinkedBlockingQueue<Runnable>());
+}
+```
+#### newCachedThradPool
+newCachedThreadPool 创建一个可缓存的线程池, 如果当前线程的长度超过了处理的需要时, 它可以灵活的回收空闲的线程, 当需求增加时, 它可以灵活的增加新的线程, 而并不会对池的长度做任何限制。（缓存线程池）
+```
+public static ExecutorService newCachedThreadPool() {
+        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                                      60L, TimeUnit.SECONDS,
+                                      new SynchronousQueue<Runnable>());
+    }
+```
+#### newSingleThreadExecutor
+newSingleThreadExecutor 创建一个单线程化的executor, 它只创建唯一的工作者线程来执行任务, 如果这个线程异常结束, 会有另一个取代它, 但是任务会保存在一个queue中等待执行。（多任务一线程）
+```
+public static ExecutorService newSingleThreadExecutor() {
+        return new FinalizableDelegatedExecutorService
+            (new ThreadPoolExecutor(1, 1,
+                                    0L, TimeUnit.MILLISECONDS,
+                                    new LinkedBlockingQueue<Runnable>()));
+    }
+```
+#### newScheduledThreadPool
+newScheduledThreadPool 创建一个定长的线程池, 而且支持定时的以及周期性执行任务, 类似timer。（定时线程池）
+```
+public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize) {
+        return new ScheduledThreadPoolExecutor(corePoolSize);
+    }
+```
+## Executor的生命周期
+JVM只有在所有（非守护）进程全部终止后才会退出。因此，如果无法正确的关闭Executor，那么JVM将无法结束。
+
+#### ExecutorService
+生命周期管理方法
+```
+public interface ExecutorService extends Executor {
+     void shutdown();
+     List<Runnable> shutdownNow();
+     boolean isShutdown();
+     boolean isTerminated();
+     boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException;
+     // ......其他各种用于任务提交的便利方法
+}
+```
+ExecutorService有三种状态: running（运行）, shuting down（关闭）, terminated（已终止）。
+
+<b>shuting down（关闭）状态： </b>
+shutdown：将停止接受新的任务, 同时等待已经提交的任务完成, 包括尚未完成的任务
+showdownNow：会启动一个强制的关闭过程, 尝试取消所有运行中的任务和排在队列中尚未开始的任务，<b>并把排队中尚未开始的任务返回</b>。
+
+对于关闭后提交到ExecutorService中的任务, 会被（拒接执行处理器）rejected execution handler处理，它会抛弃任务，或者使得execute方法抛出一个未检查的RejectedExecutionException。
+
+<b>terminated（已终止）状态：</b>
+等所有任务都完成之后，进入terminated状态, 可以调用awaitTermination等待ExecutorService到达终止状态, 也可以轮询检查isTerminated判断是否终止. 通常shutdown会紧随awaitTermination之后, 这样可以产生同步地关闭ExecutorService的效果.
+
+## Timer（不推荐使用）
+延迟任务：在100ms后执行任务
+周期任务：没100ms执行一次任务
+
+一把来说，Timer类用于执行延迟任务和周期任务，但是Timer有以下两个问题：
+1. 只会创建一个线程来执行所有task, 如果一个task非常耗时, 会导致其他的task的实效准确性出问题
+2. Timer线程并不捕获异常，对于一些未检查异常（RuntimeException）抛出，Timer线程会被终止
+```
+public class Test {
+    public static void main(String[] args) throws InterruptedException{
+        Timer timer = new Timer();
+        timer.schedule(new myTask(), 1);//这里抛出RuntimeException之后，整个Timer线程会被终止
+        Thread.sleep(1000);
+        timer.schedule(new myTask(), 1);
+        Thread.sleep(5000);
+    }
+
+    static class myTask extends TimerTask{
+
+        @Override
+        public void run() {
+            throw new RuntimeException();
+        }
+
+    }
+}
+```
+因此我们一般不使用Timer，可以使用<b>DelayQueue</b>来实现自己的调度服务, 它使BlockingQueue的一种实现，并为ScheduledThreadPoolExecutor提供了调度功能。其内部包含了一个Delayed对象的容器. Delayed是一种延迟时间对象, 只有元素过期后,它才会让你执行take获取元素(这个元素实现了Delayed接口）。
