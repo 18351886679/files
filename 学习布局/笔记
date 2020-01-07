@@ -1,3 +1,12 @@
+**display**
+block：块级元素，会新开始一行并尽可能撑满容器；设置width可以使块级元素不撑满一行，设置margin的左右为auto，可以使块级元素居中。但是width属性会在浏览器窗口不够宽时显示滚动条，这时候使用max-width来制定宽度
+inline：行内元素，不会打乱段落布局，不开始新行，没有margin或者padding属性
+none：元素不可见且不占据空间，设置visibility：hidden元素不可见还是会占据空间，通常使用js设置
+box-sizing：设置为border-box，margin和padding就不会影响元素的宽度
+column-count和column-gap可以使文字采用多列展示
+
+浮动元素的负边距：设置margin-left为负数，会让元素往左边移动
+
 **Position**
 static：静态定位，block块级元素每个占据一行，inline内联元素只有当前行放不下了才会换行
 relative：相对定位，相对静态定位所在位置来移动，有top，bottom，left和right属性
