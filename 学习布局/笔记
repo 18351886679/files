@@ -1,0 +1,17 @@
+**Position**
+static：静态定位，block块级元素每个占据一行，inline内联元素只有当前行放不下了才会换行
+relative：相对定位，相对静态定位所在位置来移动，有top，bottom，left和right属性
+absolute：绝对定位，相对第一个定位不为static的父级元素的定位，如果父级元素都没有定义position属性，那就是初始容器块，初始容器块有着和浏览器视口一样的尺寸
+fixed：固定定位，相对于浏览器视口本身的定位，一个常见的应用是持久导航菜单
+sticky：粘性定位，相对定位和固定定位的混合，元素元素在跨越特定阈值前为相对定位，之后为固定定位。
+z-index：元素重叠时的上下位置，从0开始，越大的优先展示
+
+鼠标的点击动作会影响组件的一些属性，如checkbox的checked属性。这时，在这些属性上应用选择器，并设置样式，就可以不使用js来实现动态样式改变，但是不推荐使用，使用js更合适，这样只是比较有趣而已。
+
+**Flexbox**
+flex：设置display=flex，其子元素会平均分配width；如果是inline子元素，可以设置为inline-flex；子元素设置flex属性来设置占用比例
+align-items：控制子元素在交叉轴的位置，默认是stretch拉伸子元素填充父元素的高度；flex-start，center，flex-end分别将子元素置于交叉轴的开头，中间，尾部而不拉伸子元素。子元素设置align-self可以覆盖父元素的align-items值
+justify-content：控制子元素在主轴的位置：默认是flex-start，位于开头；flex-end位于结尾；center位于中间；space-around均匀分布并且在两头留下一点空间；space-between均匀分配并且在两端不留空间
+order：设置子元素的order属性，来决定子元素的排序，order越大越靠后
+
+**常用两栏、三栏布局方式**
