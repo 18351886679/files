@@ -12,6 +12,10 @@ h1#title {
     background-color: #33AFFF
 }
 
+#base-info {
+    padding-top: 0.5em;
+}
+
 .h2-title {
     display: block;
     font-weight: bold;
