@@ -1,0 +1,34 @@
+html,body {
+    height: 100%
+}
+h1#title {
+    color: white;
+    text-align: center;
+    float: left;
+    height: 100%;
+    padding: 1.5em;
+    margin-top: 0px;
+    margin-right: 0.7em;
+    background-color: #33AFFF
+}
+
+.h2-title {
+    display: block;
+    font-weight: bold;
+    margin-top: 0.5em;
+    font-size: 1.5em;
+}
+
+.h3-title {
+    display: block;
+    font-weight: bold;
+}
+
+.key-value {
+    font-weight: bold;
+    margin-right: 0.5em;
+}
+
+.item-value {
+    margin-right: 2em;
+}
