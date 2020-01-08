@@ -1,0 +1,68 @@
+body {
+    margin: 0;
+    width: 100%;
+}
+
+.left, .main, .right {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.pos .left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 200px;
+}
+
+.pos .main {
+    position: absolute;
+    left: 200px;
+    top: 0;
+    width: 200px;
+}
+
+.pos .right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: calc(100% - 400px);
+}
+
+.float {
+    /* BFC */
+    margin-top: 2em;
+    overflow: hidden;
+}
+
+.float .left {
+    float: left;
+    width: 200px;
+
+}
+
+.float .main {
+    float: left;
+    width: 200px;
+}
+
+.float .right {
+    width: calc(100% - 400px);
+    float: left;
+} 
+
+.flex {
+    margin-top: 0.6em;
+    display: flex;
+}
+
+.flex .left {
+    flex: 0 200px;
+} 
+.flex .main {
+    flex: 0 200px;
+}
+
+.flex .right {
+    flex: 1;
+} 

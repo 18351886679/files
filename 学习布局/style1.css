@@ -1,0 +1,52 @@
+body {
+    margin: 0;
+    width: 100%;
+}
+
+.left, .right {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.pos .left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 30%;
+}
+
+.pos .right {
+    position: absolute;
+    left: 30%;
+    top: 0;
+    width: 70%;
+}
+
+.float {
+    /* BFC */
+    margin-top: 2em;
+    overflow: hidden;
+}
+
+.float .left {
+    float: left;
+    width: 30%;
+}
+
+.float .right {
+    float: left;
+    width: 70%;
+}
+
+.flex {
+    margin-top: 0.6em;
+    display: flex;
+}
+
+.flex .left {
+    flex: 3;
+}
+
+.flex .right {
+    flex: 7;
+}
