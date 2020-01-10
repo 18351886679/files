@@ -439,6 +439,15 @@ header form input::-webkit-input-placeholder {
     color: #000;
 }
 
+#telephone p {
+    position: relative;
+    bottom: 7px;
+}
+#emailaddr p {
+    position: relative;
+    bottom: 5px;
+}
+
 /***************************** footer *******************************/
 footer {
     background-image: url(img/footer.png);
