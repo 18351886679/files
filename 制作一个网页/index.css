@@ -1,0 +1,510 @@
+@font-face {
+    font-family: "Montserrat-ExtraLight";
+    src: url(Montserrat-ExtraLight.otf) format("truetype");
+    font-weight: normal;
+    font-style:normal;
+}
+
+@font-face {
+    font-family: "Montserrat-Light";
+    src: url(Montserrat-Light.otf) format("truetype");
+    font-weight: normal;
+    font-style:normal;
+}
+
+html {
+    font-family: "Montserrat-ExtraLight"
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-width: 1350px;
+    height: 100%;
+}
+
+/***************************** header *******************************/
+header {
+    padding-bottom: 179px;
+    background-image: url(img/helloworld.png)
+}
+
+header h1 {
+    margin: 0;
+    padding-top: 210px;
+    padding-bottom: 90px;
+    color: #ffffff;
+    font-size: 45px;
+    font-weight: 200;
+    text-align: center;
+}
+
+header p {
+    margin: 0;
+    padding: 0 415px 100px;
+    color: #BEBEBE;
+    font-size: 20px;
+    text-align: center;
+}
+
+header form {
+    margin: 0 320px;
+    padding-bottom: 45px;
+    text-align: center;
+    border: 1px solid #666155;
+    border-radius: 1px;
+}
+
+#form-title {
+    display: block;
+    margin: 0;
+    padding: 74px 0 20px;
+    color: #ffffff;
+    font-size: 14px;
+    text-align: center;
+    letter-spacing: 3px;
+}
+
+#form-subtitle {
+    display: block;
+    margin: 0;
+    padding: 0 0 45px;
+    color: #666155;
+    font-size: 10px;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+header form input {
+    display: inline-block;
+    padding: 0 20px;
+    margin: 0 10px 10px;
+    width: 200px;
+    font-size: 10px;
+    color: #ffffff;
+    line-height: 40px;
+    background-color: rgba(0, 0, 0, 0);
+    border: 1px solid #666155;
+    border-radius: 3px;
+}
+
+header form input::-webkit-input-placeholder {
+    color: #666155;
+}
+
+#submit {
+    width: 100px;
+
+    background: #ffffff;
+    color: #000;
+}
+
+/***************************** bortloads *******************************/
+#bortloads p {
+    margin: 85px auto 45px auto;
+    font-family: "Montserrat-Light";
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+#bortloads h2 {
+    margin: 0 auto;
+    width: 600px;
+    font-size: 30px;
+    text-align: center;
+}
+
+#panel {
+    margin: 80px 290px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#panel div {
+    margin: 0 30px 70px;
+    width: 446px;
+}
+
+#panel img {
+    float: left;
+    margin: 0 20px 40px 50px;
+}
+
+.bortloads-title {
+    margin: 0;
+    padding: 0;
+    float: left;
+    vertical-align: top;
+    font-family: "Montserrat-Light";
+    font-weight: 900;
+    font-size: 18px;
+}
+
+#panel p {
+    float: left;
+    margin: 20px 0;
+    padding: 0;
+    width: 300px;
+    text-align: left;
+}
+
+/***************************** functions *******************************/
+#functions {
+    position: relative;
+    height: 800px;
+    background-image: url(img/supportfeatures.png)
+}
+
+#functions div {
+    position: absolute;
+    left: 315px;
+    top: 185px;
+}
+
+#functions div h2 {
+    margin-bottom: 40px;
+    width: 290px;
+    font-size: 30px;
+    color: #ffffff;
+}
+
+#functions div p {
+    margin-bottom: 60px;
+    width: 340px;
+    font-size: 15px;
+    color: #aaaaaa;
+}
+
+#functions div button {
+    margin-right: 25px;
+    width: 241px;
+    height: 62px;
+    border: 1px solid #aaaaaa;
+    border-radius: 3px;
+    letter-spacing: 2px;
+}
+
+#try-product {
+    color: #aaaaaa;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+/***************************** products *******************************/
+#products {
+    padding-bottom: 60px;
+    border-bottom: 1px solid #dddddd;
+}
+
+#products h2 {
+    text-align: center;
+    line-height: 170px;
+    font-size: 40px;
+}
+
+#products-panel {
+    display: flex;
+    justify-content: center;
+}
+
+.product {
+    margin: 40px;
+    text-align: center;
+}
+
+.product p {
+    margin-top: 40px;
+    width: 250px;
+    text-align: center;
+    color: #777777;
+    line-height: 25px;
+}
+
+.product img {
+    margin:  0 auto;
+}
+
+/***************************** usages *******************************/
+#usages {
+    padding: 120px;
+    border-bottom: 1px solid #dddddd;
+}
+
+#improve-business {
+    width: 1000px;
+    margin: 0 auto;
+    padding-bottom: 80px;
+    overflow: hidden;
+}
+
+#improve-business img {
+    float: left;
+    margin-right: 100px;
+}
+
+#improve-business h4 {
+    margin: 60px 0 20px;
+    float: left;
+    width: 329px;
+
+    font-family: "Montserrat-Light";
+    font-weight: 900;
+    font-size: 20px;
+}
+
+#improve-business p {
+    float: left;
+    width: 311px;
+    line-height: 30px;
+    color: #888888;
+}
+
+#choose-color {
+    width: 1000px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+#choose-color img {
+    float: right;
+    margin-left: 100px;
+}
+
+#choose-color h4 {
+    margin: 35px 0 20px;
+    float: left;
+    width: 329px;
+    font-family: "Montserrat-Light";
+    font-weight: 900;
+    font-size: 20px;
+}
+
+#choose-color p {
+    float: left;
+    width: 311px;
+    line-height: 30px;
+    color: #888888;
+}
+
+/***************************** achievements *******************************/
+#achievements {
+    border-bottom: 1px solid #dddddd;
+}
+
+#achievements h2 {
+    margin: 100px 0 30px;
+    text-align: center;
+    font-size: 40px;
+}
+
+#achievements p {
+    margin: 0px auto 50px auto;
+    width: 700px;
+
+    text-align: center;
+    font-size: 15px;
+    color: #888888;
+}
+
+#achievements div {
+    margin: 0px auto 80px auto;
+    text-align: center;
+    width: 1000px;
+}
+
+#achievements div img {
+    margin: 10px;
+}
+
+/***************************** contracts *******************************/
+#feedback-and-contracts {
+    margin: 80px auto;
+    padding: 0;
+    width: 980px;
+    position: relative;
+    height: 540px;
+}
+
+#feedback {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 470px;
+    height: 560px;
+
+    text-align: center;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+}
+
+#feedback h6 {
+    width: 470px;
+
+    font-size: 18px;
+    letter-spacing: 2px;
+    font-family: "Montserrat-Light";
+    font-weight: 900;
+    text-align: center;
+}
+
+#email {
+    padding: 0 20px;
+    margin-bottom: 30px;
+    width: 330px;
+
+    font-size: 15px;
+    box-sizing: border-box;
+
+    line-height: 45px;
+    border: 1px solid #dddddd;
+    border-radius: 1;
+}
+
+#subject {
+    padding: 0 20px;
+    margin-bottom: 30px;
+    width: 330px;
+
+    font-size: 15px;
+    box-sizing: border-box;
+
+    line-height: 45px;
+    border: 1px solid #dddddd;
+    border-radius: 1px;
+}
+
+#message {
+    padding: 15px 20px;
+    margin: 0 auto 30px auto;
+    width: 330px;
+
+    
+    font-size: 15px;
+    box-sizing: border-box;
+
+    line-height: 20px;
+    border: 1px solid #dddddd;
+    border-radius: 1px;
+
+    resize: none;
+}
+
+
+
+#send {
+    margin-bottom: 0 30px;
+    width: 330px;
+    font-size: 15px;
+    text-align: center;
+    line-height: 45px;
+    border: 1px solid #dddddd;
+    border-radius: 1px;
+
+    color: #ffffff;
+    background: #000;
+}
+
+#contracts {
+    position: absolute;
+    left: 570px;
+    top: 0;
+    width: 420px;
+    height: 560px;
+}
+
+#contracts h2 {
+    margin: 70px 0 30px;
+    font-size: 40px;
+    font-weight: 100;
+}
+
+#contracts-msg {
+    margin-bottom: 55px;
+    line-height: 25px;
+
+    color: #888888;
+}
+
+#address p,
+#telephone p,
+#emailaddr p {
+    display: inline-block;
+    font-weight: 900;
+    margin-left: 20px;
+
+    font-family: "Montserrat-Light";
+    color: #000;
+}
+
+/***************************** footer *******************************/
+footer {
+    background-image: url(img/footer.png);
+    padding: 70px 0 90px 0;
+}
+
+footer .footer-panel {
+    margin: 0 auto;
+    width: 1170px;
+    overflow: hidden;
+}
+
+.ul-links,
+#enjoy-your-life {
+    float: left;
+    margin: 0;
+    width: 250px;
+}
+
+.ul-links {
+    list-style-type: none;
+}
+
+.ul-title {
+    color: #ffffff;
+    font-size: 12px;
+
+    line-height: 55px;
+    letter-spacing: 2px;
+}
+
+.li-link a {
+    display: inline-block;
+    text-decoration: none;
+
+    color: #888888;
+    font-size: 14px;
+    line-height: 55px;
+}
+
+.li-link a:hover {
+    text-decoration: underline #888888;
+}
+
+#enjoy-your-life h4 {
+    color: #ffffff;
+    font-size: 12px;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+#enjoy-your-life p {
+    color: #888888;
+    margin-bottom: 40px;
+}
+
+#enjoy-your-life ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#enjoy-your-life li {
+    display: inline-block;
+}
+
+#enjoy-your-life a {
+    display: inline-block;
+    margin: 0 10px;
+}

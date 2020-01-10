@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!--
+    代码风格符合某种编码规范
+    尽可能按照设计稿的尺寸进行实现
+    设计稿中的图片或文字素材在实现时可以不一致
+    充分应用上之前学习到的各种布局方式，尽可能几种方式都运用尝试一次，比较各种布局的适用场景
+    设计稿中下方导师介绍图片，左上角灰色底表示，鼠标hover到图片上时的效果变化。
+    不需要考虑兼容IE浏览器
+-->
+
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+    <link rel="shotcut icon" href="shotcut.png">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+
+    <!-- 头部，注册页 -->
+    <header>
+        <h1>Hello World</h1>
+        <p>
+            China is speeding up strategic plan. standards. traffic rules. laws and regulations on accident-incurred
+            liabilities for its smart car industry. Economic Information Daily reported Thursday.
+        </p>
+        <form method="POST" action="/signUp">
+            <label id="form-title">CREATE YOUR ACCOUNT</label>
+            <label id="form-subtitle">IT IS ABSOLUTELY FREE</label>
+            <input type="text" name="username" id="username" placeholder="Enter your email">
+            <input type="password" name="password" id="passowrd" placeholder="Create your password">
+            <input type="submit" id="submit" value="SIGN UP">
+        </form>
+    </header>
+
+    <!-- 优点介绍页，使用flex -->
+    <section id="bortloads">
+        <p>BOATLOADS OF AWESOME</p>
+        <h2>Ready-made, customizable, HTML landing page sections</h2>
+        <div id="panel">
+            <div id="mobile-first">
+                <img src="img/mobilefirst.png">
+                <span class="bortloads-title">Mobile First</span>
+                <p class="bortloads-content">
+                    All modulz are built mobile-first for maximum device compatibility.
+                </p>
+            </div>
+
+            <div id="accessibility">
+                <img src="img/accessibility.png">
+                <span class="bortloads-title">Accessibility</span>
+                <p class="bortloads-content">
+                    Support for IE8, mobile and tablet devices screenreaders and color blind.
+                </p>
+            </div>
+
+            <div id="fliud-typographt">
+                <img src="img/fluidtypographt.png">
+                <span class="bortloads-title">Fluid Typography</span>
+                <p class="bortloads-content">
+                    On different screen sizes, fonts automagically scale with the viewport.
+                </p>
+            </div>
+
+            <div id="customization">
+                <img src="img/customization.png">
+                <span class="bortloads-title">Customization</span>
+                <p class="bortloads-content">
+                    Make any design your own using the Style Editor. Personalize fonts. colors. and layouts to create
+                    the custom look you want.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 功能图片展示页，使用position -->
+    <section id="functions">
+        <div>
+            <h2>Supportive policies for China's smart car</h2>
+            <p>
+                China will come up with its own smart car standards traffic rules, laws and regulations relating to
+                safety. according to the China industry Innovation Alliance for the Intelli- gent and Connected Vehicles
+            </p>
+            <button type="button" id="check-features">CHECK OUT FEATURES</button>
+            <button type="button" id="try-product">TRY PRODUCT FOR FREE</button>
+        </div>
+    </section>
+
+    <!-- 产品列表页，使用flex -->
+    <section id="products">
+        <h2>Try Our Awesome Products</h2>
+        <div id="products-panel">
+            <div class="product">
+                <img src="img/singleton.png">
+                <p>Li Jun, a China Academy of Engineering academician and also director of the alliance's experts'
+                    committee, said that China will also launch design guidance for smart cars, smart map architecture
+                    and
+                    standards for test grounds.</p>
+            </div>
+            <div class="product">
+                <img src="img/hero.png">
+                <p>Li said the smart car industry is able to enlarge the current car industry by 1 trillion yuan
+                    ($158.15
+                    billion) and also able to boost fast development in 5G, internet of cars, big data, artificial
+                    intelligence and new-energy vehicles.</p>
+            </div>
+            <div class="product">
+                <img src="img/portland.png">
+                <p>Zhang Junyi, a partner with NIO Capital, said that the smart car is the trend for the car industry
+                    and
+                    China's auto sector will usher in a new key development stage with the improvement of
+                    infrastructure,
+                    technology, policies and laws.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 使用方式展示页，使用float -->
+    <section id="usages">
+        <div id="improve-business">
+            <img src="img/leaf.png">
+            <h4>Learn How to Improve Your Personal Business</h4>
+            <p>Li Jun, a China Academy of Engineering academician and also director of the alliance's experts'
+                committee, said that China will also launch design guidance for smart cars, smart map architecture and
+                standards for test grounds.</p>
+        </div>
+        <div id="choose-color">
+            <img src="img/bird.png">
+            <h4>Choose Between Two Beautifully Designed Color Schemes.</h4>
+            <p>China will come up with its own smart car standards, traffic rules, laws and regulations relating to
+                safety, according to the China Industry Innovation Alliance for the Intelligent and Connected Vehicles.
+            </p>
+        </div>
+    </section>
+
+    <!-- 成果展示页，使用float -->
+    <section id="achievements">
+        <h2>Our Awesome Crew</h2>
+        <p>Our unique online teaching style makes learning easy for everyone. Whether you are trying to land a new job,
+            brush up on your skills.</p>
+        <div>
+            <img src="img/achieve1.png">
+            <img src="img/achieve2.png">
+            <img src="img/achieve3.png">
+            <img src="img/achieve4.png">
+        </div>
+    </section>
+
+    <!-- 反馈和联系方式页面，使用position -->
+    <section id="feedback-and-contracts">
+        <form id="feedback" method="POST" action="/feedback">
+            <h6>FELL FREE TO WRITE US</h6>
+            <input type="text" name="email" id="email" placeholder="E-mail">
+            <input type="text" name="subject" id="subject" placeholder="Subject">
+            <textarea name="message" rows="6" id="message" placeholder="Message"></textarea>
+            <input type="submit" name="send" id="send" value="SEND">
+        </form>
+
+        <div id="contracts">
+            <h2>Contracts</h2>
+            <p id="contracts-msg">Make any design your own using the Style Editor. Personalize fonts, colors, and
+                layouts to create the
+                custom look you want.</p>
+            <div id="address">
+                <img src="img/address.png">
+                <p>
+                    360 King Street
+                    <br>
+                    Feastrvale Trevose, PA 19057
+                </p>
+            </div>
+            <div id="telephone">
+                <img src="img/telephone.png">
+                <p>
+                    (755) 564-84-12
+                </p>
+            </div>
+            <div id="emailaddr">
+                <img src="img/emailaddr.png">
+                <p>
+                    youname@mail.com
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚，使用float -->
+    <footer>
+        <div class="footer-panel">
+            <ul class="ul-links">
+                <li class="ul-title">LEARN MORE</li>
+                <li class="li-link"><a href="#">How it works?</a></li>
+                <li class="li-link"><a href="#">Meeting tools</a></li>
+                <li class="li-link"><a href="#">Live streaming</a></li>
+                <li class="li-link"> <a href="#">Contact method</a></li>
+            </ul>
+
+            <ul class="ul-links">
+                <li class="ul-title">ABOUT US</li>
+                <li class="li-link"><a href="#">About us</a></li>
+                <li class="li-link"><a href="#">Features</a></li>
+                <li class="li-link"><a href="#">Privacy police</a></li>
+                <li class="li-link"><a href="#">Terms & Conditions</a></li>
+            </ul>
+
+            <ul class="ul-links">
+                <li class="ul-title">SUPPORT</li>
+                <li class="li-link"><a href="#">FAQ</a></li>
+                <li class="li-link"><a href="#">Contact us</a></li>
+                <li class="li-link"><a href="#">Live chat</a></li>
+                <li class="li-link"><a href="#">Phone call</a></li>
+            </ul>
+
+            <div id="enjoy-your-life">
+                <h4>ENJOY YOUR LIFE</h4>
+                <p>Great web UI kit for designers, freelancers or business.</p>
+                <ul>
+                    <li><a href="#"><img src="img/twitter.png"></a></li>
+                    <li><a href="#"><img src="img/facebook.png"></a></li>
+                    <li><a href="#"><img src="img/google.png"></a></li>
+                    <li><a href="#"><img src="img/tumbler.png"></a></li>
+                    <li><a href="#"><img src="img/pinterest.png"></a></li>
+                    <li><a href="#"><img src="img/linkedin.png"></a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

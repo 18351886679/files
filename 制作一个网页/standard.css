@@ -1,0 +1,41 @@
+/* 一个rule包含多个selector，一行一个 */
+.post,
+.page,
+.comment {
+    line-height: 1.5;
+}
+
+/* 不要为选择器加上限定，dialog#error => #error */
+/* 可以使用属性缩写，尽量使用属性缩写 */
+
+/* 属性的顺序为 位置 > 形状 > 文本格式 > 视觉格式 */
+.sidebar {
+    /* formatting model: positioning schemes / offsets / z-indexes / display / ...  */
+    position: absolute;
+    top: 50px;
+    left: 0;
+    overflow-x: hidden;
+
+    /* box model: sizes / margins / paddings / borders / ...  */
+    width: 200px;
+    padding: 5px;
+    border: 1px solid #ddd;
+
+    /* typographic: font / aligns / text styles / ... */
+    font-size: 14px;
+    line-height: 20px;
+
+    /* visual: colors / shadows / gradients / ... */
+    background: #f5f5f5;
+    color: #333;
+    -webkit-transition: color 1s;
+       -moz-transition: color 1s;
+            transition: color 1s;
+}
+
+/* 0-1之间的小数，省略整数部位的0 */
+
+/* url函数中的路径不加引号，且省去协议 */
+body {
+    background: url(//baidu.com/img/bg.png)
+}

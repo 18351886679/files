@@ -1,0 +1,60 @@
+<!-- jishu-->
+<!DOCTYPE html>
+
+
+<!-- class的命名使用‘-’来分割，命名必须表示组件的内容或者功能，不能是样式信息 -->
+<!-- 系统属性使用全小写 -->
+<!-- 自定义属性使用-分割，并使用data-作为前缀 -->
+<!-- 不使用单引号，必须使用双引号 -->
+<!-- 无需自闭合标签有 input、br、img、hr，不需要自闭合 -->
+<!-- 
+下面是常见标签语义
+
+p - 段落
+h1,h2,h3,h4,h5,h6 - 层级标题
+strong,em - 强调
+ins - 插入
+del - 删除
+abbr - 缩写
+code - 代码标识
+cite - 引述来源作品的标题
+q - 引用
+blockquote - 一段或长篇引用
+ul - 无序列表
+ol - 有序列表
+dl,dt,dd - 定义列表
+-->
+
+<!-- html必须制定language -->
+<html lang="zh-CN">
+    <head>
+        <!-- meta必须是head的第一个子元素，且必须制定字符编码 -->
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+        <!-- 必须制定网页图标 -->
+        <link rel="shortcut icon" href="path/to/favicon.ico">
+
+        <!-- css和js都不需要声明type，因为type默认是text/css text/javascript -->
+        <link rel="stylesheet" href="standard.css">
+    </head>
+    <body>
+        <!-- 不要指定src的img为空，浏览器会解析为当前路径，重新发请求并试图解析为图片。不指定src就是 -->
+        <!-- 有下载需求的使用img指定，否则用css的背景图片展示 -->
+        <img>
+
+        <form>
+            
+            <!-- 带标题的元素要使用label的for属性来声明 -->
+            <lable for="username">用户名：</lable>
+            <input type="checkbox" id="username">
+
+            <!-- button要指定type，因为默认type是submit，会提交表单；不要使用按钮类元素的name属性-->
+            <button type="button"></button>
+        </form>
+  
+
+        <!-- js放在页面末尾，或者异步加载 -->
+        <script src="test.js"></script>
+    </body>
+</html>
