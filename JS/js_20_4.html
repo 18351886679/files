@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            #smell {
+                background-image: url(erik.jpg);
+                width: 480px;
+                height: 480px;
+                background-position: 0 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="smell"></div>
+        <script>
+            var smell = document.getElementById("smell");
+            var height = 0;
+          
+          
+            setInterval(function() {
+                height += 480;
+                if (height == 8160) {
+                    h = 0;
+                }
+                smell.style.backgroundPositionY = "-" + height + "px";
+            }, 100);
+        </script>
+    </body>
+</html>
