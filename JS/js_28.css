@@ -1,0 +1,39 @@
+html, body {
+    width: 100%;
+}
+
+.wrapper {
+    width: 150px;
+}
+
+#email-input {
+    display: block;
+    width: 150px;
+    box-sizing: border-box;
+    font-size: 10px;
+    line-height: 20px;
+}
+
+#email-sug-wrapper {
+    padding: 0;
+    margin: 0;
+    display: none;
+    overflow: hidden;
+
+    box-sizing: border-box;
+    width: 150px;
+    list-style-type: none;
+    border: 1px solid #cccccc;
+    border-top: none;
+}
+
+#email-sug-wrapper li {
+    margin: 0;
+    padding-left: 2px;
+    box-sizing: border-box;
+    width: 150px;
+    text-align: left;
+    font-size: 10px;
+    line-height: 20px;
+    color: #cccccc;
+}
