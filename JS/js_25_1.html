@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+</head>
+
+<body>
+    <p id="content"></p>
+    <script>
+        var p = document.querySelector("#content");
+        var weekdays = [
+                "星期日",
+                "星期一",
+                "星期二",
+                "星期三",
+                "星期四",
+                "星期五",
+                "星期六"
+            ];
+
+        setTime();
+
+        function setTime() {
+            p.innerHTML = getTime();
+            setTimeout(setTime, 500);
+        }
+
+        function getTime() {
+            var date = new Date();
+            return date.getFullYear() + "年" + complete(date.getMonth() + 1) + "月" + complete(date.getDate()) + "日 " + weekdays[(date.getDay())] + " "
+                + complete(date.getHours()) + ":" + complete(date.getMinutes()) + ":" + complete(date.getSeconds());
+        }
+
+        function getDate() {
+
+        }
+
+        function complete(i) {
+            if (i < 10) {
+                return "0" + i;
+            }
+            return i;
+        }
+
+
+    </script>
+</body>
+
+</html>
